@@ -30,7 +30,7 @@ npm install
 After installing all dependencies, run the following command in the root folder of the Node application (node-api folder):
 
 ``` bash
-node index.js
+node api/index.js
 ```
 
 Then, run the following command in the weather-app folder:
