@@ -1,8 +1,8 @@
 require('dotenv').config();
 
 const express = require('express');
-const weatherRoutes = require('./routes/weatherRoutes');
-const autocompleteRoutes = require('./routes/autocompleteRoutes');
+const weatherRoutes = require('../routes/weatherRoutes');
+const autocompleteRoutes = require('../routes/autoCompleteRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
