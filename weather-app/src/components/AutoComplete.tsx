@@ -38,7 +38,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({ onCitySelect }) => {
 
       // making sure that the response is the same type of the state
       const response = await axios.get<CitySuggestion[]>(
-          `${apiUrl}/autocomplete?q=${encondedCityName}`
+          `${apiUrl}/autoComplete?q=${encondedCityName}`
         );
 
       setSuggestions(response.data);

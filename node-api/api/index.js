@@ -17,7 +17,7 @@ app.use(function(req, res, next) {
   });
 
 app.use('/weather', weatherRoutes);
-app.use('/autocomplete', autocompleteRoutes);
+app.use('/autoComplete', autocompleteRoutes);
 
 app.get( '/', (req,res) => {
     res.send('Weather API - please use the /weather/{searchedCityName} to get the city weather data');
