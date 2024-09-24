@@ -31,9 +31,11 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ city }) => {
       setLoading(true);
       setError(null);
 
+      const apiUrl = process.env.REACT_APP_API_URL;
+
       try {
         const response = await axios.get<WeatherData>(
-          `http://localhost:4000/weather/${encodeURIComponent(city)}`
+          `${apiUrl}/weather/${encodeURIComponent(city)}`
         );
         setWeatherData(response.data);
         setError(null);

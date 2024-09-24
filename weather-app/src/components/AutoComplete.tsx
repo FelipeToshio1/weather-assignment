@@ -16,6 +16,8 @@ interface AutocompleteProps {
 
 const Autocomplete: React.FC<AutocompleteProps> = ({ onCitySelect }) => {
   
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   // Query typed by the user
   const [query, setQuery] = useState<string>('');
   // List of city suggestions
@@ -36,7 +38,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({ onCitySelect }) => {
 
       // making sure that the response is the same type of the state
       const response = await axios.get<CitySuggestion[]>(
-          `http://localhost:4000/autocomplete?q=${encondedCityName}`
+          `${apiUrl}/autocomplete?q=${encondedCityName}`
         );
 
       setSuggestions(response.data);

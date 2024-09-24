@@ -40,5 +40,6 @@ npm start
 ```
 
 Make sure to adjust the configurations to avoid using the same port for both projects and assign the environment of your choice.
+It is suggested to create the ".env.local" file in the root file of each project and add the localhost url information and you personal api key for third party APIs.
 
 
