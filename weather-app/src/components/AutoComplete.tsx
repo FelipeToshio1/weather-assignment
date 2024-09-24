@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import axios from 'axios';
+import { TextField, Autocomplete as MUIAutoComp } from '@mui/material';
 
 // Define the type for city suggestion data
 interface CitySuggestion {
@@ -56,22 +57,22 @@ const Autocomplete: React.FC<AutocompleteProps> = ({ onCitySelect }) => {
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Search for a city"
-        value={query}
-        onChange={handleInputChange}
-      />
-      {suggestions.length > 2 && (
-        <ul className="autocomplete-suggestions">
-          {suggestions.map((suggestion, index) => (
-            <li key={index} onClick={() => handleSelectCity(suggestion.name)}>
-              {suggestion.name}, {suggestion.country}, {suggestion.region}
-            </li>
-          ))}
-        </ul>
-      )}
+    <div style={{ margin: '20px'}}>
+      <MUIAutoComp
+        freeSolo
+        options={ suggestions.map((suggestion) => `${suggestion.name}, ${suggestion.country}, ${suggestion.region}`)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label = "Search for a city"
+            variant="outlined"
+            onChange={handleInputChange}
+            value = {query}
+          />
+        )}
+        onInputChange={(event, newValue) => setQuery(newValue)}
+        onChange = {(event, value) => onCitySelect(value || '')}
+        />
     </div>
   );
 };

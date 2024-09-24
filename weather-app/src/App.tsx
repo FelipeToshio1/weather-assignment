@@ -8,7 +8,7 @@ const App: React.FC = () => {
   const [selectedCity, setSelectedCity] = useState<string>('');
 
   return (
-    <div className="app">
+    <div style={{ textAlign: 'center', padding: '50px' }}>
       <h1>City Weather</h1>
       <Autocomplete onCitySelect={setSelectedCity} />
       {selectedCity && <WeatherDisplay city={selectedCity} />}
