@@ -21,24 +21,30 @@ const Autocomplete: React.FC<AutocompleteProps> = ({ onCitySelect }) => {
   // List of city suggestions
   const [suggestions, setSuggestions] = useState<CitySuggestion[]>([]); 
 
+  //Error handling
+  const [error, setError] = useState<string | null>(null);
+
   // Fetch suggestions from the backend
   const fetchSuggestions = async (searchQuery: string) => {
-    if (searchQuery.length > 2) {
-      try {
-
-        let encondedCityName = encodeURIComponent(searchQuery);
-
-        // making sure that the response is the same type of the state
-        const response = await axios.get<CitySuggestion[]>(
-            `http://localhost:4000/autocomplete?q=${encondedCityName}`
-          );
-
-        setSuggestions(response.data);
-      } catch (error) {
-        console.error('Error fetching suggestions', error);
-      }
-    } else {
+    if (searchQuery.length < 2) {
       setSuggestions([]);
+      return;
+    }
+
+    try {
+      let encondedCityName = encodeURIComponent(searchQuery);
+
+      // making sure that the response is the same type of the state
+      const response = await axios.get<CitySuggestion[]>(
+          `http://localhost:4000/autocomplete?q=${encondedCityName}`
+        );
+
+      setSuggestions(response.data);
+
+      //Clear previous errors if It has one
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching suggestions', error);
     }
   };
 
@@ -46,14 +52,28 @@ const Autocomplete: React.FC<AutocompleteProps> = ({ onCitySelect }) => {
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setQuery(value);
-    fetchSuggestions(value);
+
+    //Basic validation for empty or short input, can be improved
+    if(value.trim().length < 2){
+      setError('City name must have more than two characters');
+      setSuggestions([]);
+    }else{
+      //Clear error when It's correct
+      setError(null);
+      fetchSuggestions(value);
+    }
   };
 
   // Handle city selection from suggestions
   const handleSelectCity = (cityName: string) => {
-    setQuery(cityName);
-    setSuggestions([]);
-    onCitySelect(cityName); // Pass selected city to the parent component
+    if(cityName){
+      onCitySelect(cityName); // Pass selected city to the parent component
+      setQuery(cityName);
+      setSuggestions([]);
+      setError(null);
+    } else {
+      setError('City name invalid, make sure to select one from the list');
+    }
   };
 
   return (
@@ -68,10 +88,12 @@ const Autocomplete: React.FC<AutocompleteProps> = ({ onCitySelect }) => {
             variant="outlined"
             onChange={handleInputChange}
             value = {query}
+            error={Boolean(error)}
+            helperText={error}
           />
         )}
         onInputChange={(event, newValue) => setQuery(newValue)}
-        onChange = {(event, value) => onCitySelect(value || '')}
+        onChange = {(event, value) => handleSelectCity(value || '')}
         />
     </div>
   );

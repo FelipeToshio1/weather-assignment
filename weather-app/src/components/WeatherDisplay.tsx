@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {Card, CardContent, Typography, Grid2} from '@mui/material';
+import {Card, CardContent, Typography, Grid2, Alert} from '@mui/material';
 
 //@ts-ignore
 import { WiDaySunny, WiCloud, WiRain, WiStrongWind, WiHumidity, WiDaySnow, WiFog, WiDayThunderstorm, WiDayShowers, WiAlien } from 'weather-icons-react';
@@ -25,28 +25,30 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ city }) => {
   const [error, setError] = useState<string | null>(null); // Error state
 
   useEffect(() => {
-    if (city) {
-      const fetchWeather = async () => {
-        setLoading(true);
-        try {
-          const response = await axios.get<WeatherData>(
-            `http://localhost:4000/weather/${encodeURIComponent(city)}`
-          );
-          setWeatherData(response.data);
-          setError(null);
-        } catch (err) {
-          setError('Failed to fetch weather data');
-          setWeatherData(null);
-        }
-        setLoading(false);
-      };
+    if (!city) return;
+    
+    const fetchWeather = async () => {
+      setLoading(true);
+      setError(null);
 
-      fetchWeather();
-    }
+      try {
+        const response = await axios.get<WeatherData>(
+          `http://localhost:4000/weather/${encodeURIComponent(city)}`
+        );
+        setWeatherData(response.data);
+        setError(null);
+      } catch (err) {
+        setError('Error trying to get weather data. Please Try Again later');
+        setWeatherData(null);
+      }
+      setLoading(false);
+    };
+
+    fetchWeather();
   }, [city]);
 
   if (loading) return <p>Loading weather...</p>;
-  if (error) return <p>{error}</p>;
+  if (error) return <Alert severity='error'>{error}</Alert>;
 
   const weatherIconHandler = (condition: string) => {
     switch (condition.toLowerCase()) {
@@ -122,25 +124,26 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ city }) => {
   }
 
   return (
-    <Card style= {{maxWidth: '400px', margin: '20px auto'}}>
-      <CardContent>
-        <Typography variant="h5" component="div">
-          {weatherData?.city}
-        </Typography>
-        <Grid2 container spacing={2} alignItems="center">
-          <Grid2>{weatherIconHandler(weatherData?.weather || 'sunny')}</Grid2>
-          <Grid2>
-            <Typography variant="h2">{weatherData?.temperature}ºC</Typography>
+    weatherData ? 
+      (<Card style= {{maxWidth: '400px', margin: '20px auto'}}>
+        <CardContent>
+          <Typography variant="h5" component="div">
+            {weatherData?.city}
+          </Typography>
+          <Grid2 container spacing={2} alignItems="center">
+            <Grid2>{weatherIconHandler(weatherData?.weather || 'sunny')}</Grid2>
+            <Grid2>
+              <Typography variant="h2">{weatherData?.temperature}ºC</Typography>
+            </Grid2>
           </Grid2>
-        </Grid2>
-        <Typography variant='body2'>
-          Humidity: {weatherData?.humidity}% <WiHumidity size={24} />
-        </Typography>
-        <Typography variant='body2'>
-          Wind Speed: {weatherData?.windSpeed} m/s <WiStrongWind size={24} />
-        </Typography>
-      </CardContent>
-    </Card>
+          <Typography variant='body2'>
+            Humidity: {weatherData?.humidity}% <WiHumidity size={24} />
+          </Typography>
+          <Typography variant='body2'>
+            Wind Speed: {weatherData?.windSpeed} m/s <WiStrongWind size={24} />
+          </Typography>
+        </CardContent>
+      </Card>) : null
   );
 };
 
