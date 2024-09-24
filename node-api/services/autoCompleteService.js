@@ -2,7 +2,7 @@ const axios = require('axios');
 const GEODB_API_KEY = process.env.GEODB_API_KEY;
 
 exports.fetchCitySuggestions = async (query) => {
-    const url = `https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix=${query}&types=CITY&limit=5`;
+    const url = `https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix=${query}&types=CITY&limit=10`;
 
     //adding authorization headers
     const options = {

@@ -1,4 +1,4 @@
-const autocompleteService = require('./services/autocompleteService');
+const autocompleteService = require('../services/autocompleteService');
 
 exports.getCityAutocomplete = async (req, res) => {
     const query = req.query.q;
